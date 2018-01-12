@@ -7,7 +7,7 @@
 export default{
   data(){
     return {
-      msg:"你妹的"
+      msg:"你妹的dfsdfsdfsfdsfsd"
     }
   }
 }
