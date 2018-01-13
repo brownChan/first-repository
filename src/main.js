@@ -2,7 +2,7 @@
  * @Author: 我家的小强 
  * @Date: 2018-01-12 11:06:20 
  * @Last Modified by: 我家的小强
- * @Last Modified time: 2018-01-13 10:41:30
+ * @Last Modified time: 2018-01-13 11:38:00
  */
 //1.导入vue相关的第三方包
 import Vue from "vue";
@@ -14,7 +14,7 @@ import VueRouter from "vue-router";
 import ElementUI from "element-ui";
 //导入element-ui样式
 import "../node_modules/element-ui/lib/theme-chalk/index.css";
-import "../node_modules/element-ui/lib/theme-chalk/icon.css";
+import "./less/index.less";
 
 
 //使用element-ui
