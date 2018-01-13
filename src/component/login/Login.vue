@@ -62,8 +62,14 @@
           console.log(123);
         })
       },
-      submitForm(){
-        
+      submitForm (formName){
+        this.$refs[formName].validate(validate=>{
+          if(validate){
+            this.login();
+          }else{
+            this.$alert("错误了，重来了");
+          }
+        })
       }
     }
   }
