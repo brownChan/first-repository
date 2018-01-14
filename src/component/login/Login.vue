@@ -8,7 +8,7 @@
         <el-input v-model="formLabelAlign.uname"></el-input>
       </el-form-item>
       <el-form-item label="用户密码" prop="upwd">
-        <el-input v-model="formLabelAlign.upwd"></el-input>
+        <el-input v-model="formLabelAlign.upwd" type="password"></el-input>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="submitForm('ruleForm')">立即登录</el-button>
@@ -76,7 +76,7 @@
             // this.$alert("登陆成功，马上跳转到首页");
             // this.$router.push("/admin")
           }else{
-            this.$alert(res.data.message);
+            this.$alert(res.data.message,"温馨提示");
           }
         })
       },
