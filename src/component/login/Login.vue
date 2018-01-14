@@ -1,8 +1,8 @@
 <template>
   <div id="login">
-    <h1>后台管理系统</h1>
+    <h1 ref="title">后台管理系统</h1>
     <!-- model用来关联表单数据，rules用来指定校验规则 -->
-    <el-form label-position="labelPosition" label-width="80px"       :model="formLabelAlign" class="inp" :rules="rules">
+    <el-form label-position="labelPosition" label-width="80px"       :model="formLabelAlign" class="inp" :rules="rules" ref="ruleForm">
       <!-- 如果要表单校验与重置功能，必须加上prop属性 -->
       <el-form-item label="用户账号" prop="uname">
         <el-input v-model="formLabelAlign.uname"></el-input>
@@ -46,10 +46,13 @@
         //表单验证规则
         rules:{
           uname:[
-            {validator: validateUname, trigger:"blur"}
+            {validator: validateUname, trigger:"blur"},
+            {require: true, message:"请输入账号", trigger:"blur"},
+            {min: 5, max: 18, message:"账号在5~18位", trigger:"blur"}
           ],
           upwd:[
-            {validator: validatePass, trigger:"blur"}
+            {validator: validatePass, trigger:"blur"},
+            {pattern:/^\w{6,18}$/, message:"密码在6~18位", trigger:"blur"}
           ]
         }
       }
@@ -59,17 +62,42 @@
       login () {
         this.$http.post(this.$api.login,this.formLabelAlign)
         .then(res=>{
-          console.log(123);
-        })
-      },
-      submitForm (formName){
-        this.$refs[formName].validate(validate=>{
-          if(validate){
-            this.login();
+          if(res.data.status === 0){
+            this.$alert('登陆成功，马上跳转到首页', '温馨提示', {
+          confirmButtonText: '确定',
+          callback: action => {
+            this.$router.push("/admin")
+            // this.$message({
+            //   type: 'info',
+            //   message: `action: ${ action }`
+            // });
+          }
+        });
+            // this.$alert("登陆成功，马上跳转到首页");
+            // this.$router.push("/admin")
           }else{
-            this.$alert("错误了，重来了");
+            this.$alert(res.data.message);
           }
         })
+      },
+      //表单提交
+      submitForm (formName){
+        //通过ref引用得到form表单元素，然后调用validate方法去检验全部字段
+        //全部字段都通过校验，那么回调收到的值为true，否则为false
+        //$refs是vue提供的用于替代传统的dom方法获取方式
+        //this.$refs.title = document.querySelector("h1");
+        this.$refs[formName].validate(result =>{
+          if(result){
+            this.login();
+          }else{//其中一个规则不符合都会执行else
+            this.$alert("错误了，重来吧");
+            return false;
+          }
+        })
+      },
+      //重置
+      resetForm(formName){
+        this.$refs[formName].resetFields();
       }
     }
   }
