@@ -9,7 +9,7 @@
         <el-button size="mini" plain icon="el-icon-plus">增加</el-button>
         <el-button size="mini" plain icon="el-icon-check">全选</el-button>
         <el-button size="mini" plain icon="el-icon-delete">删除</el-button>
-        <el-input style="width:200px; float:right;" size="small" placeholder="请输入内容" suffix-icon ="el-icon-search">
+        <el-input style="width:200px; float:right;" size="small" placeholder="请输入内容" suffix-icon ="el-icon-search" v-model="gsListQuery.searchvalue"  @keydown.native.enter="getGoodsList" >
         </el-input>
       </div>
       <!-- 表格 -->
@@ -25,7 +25,18 @@
         <!-- 普通类型还通过内嵌template标签，书写当前列展示的数据 -->
         <el-table-column label="标题">
           <!-- scope.row是固定写法，title是活的，展示什么字段，就写什么 -->
-          <template slot-scope="scope">{{scope.row.title}}</template>
+          <template slot-scope="scope">
+            <el-tooltip class="item" effect="dark" placement="right">
+              <!-- totip的提示信息，这个标签必须加一个slot属性 -->
+              <div slot="content">
+                <img style="width:200px;" :src="scope.row.imgurl" alt="商品预览">
+              </div>
+              <!-- 被提示的原标签 -->
+              <router-link :to="{name:'goodsCtEdit',params:{id: scope.row.id}}">
+                {{scope.row.title}}
+              </router-link>
+            </el-tooltip>
+          </template>
         </el-table-column>
         <!-- 所属类别 -->
         <!-- 没有type类型就是普通类型，普通类型可以通过label设置表头 -->
@@ -56,7 +67,7 @@
         <!-- 显示的数据是死的，固定为“修改”，用template包裹实现，同时需要包裹router-link标签，为了实现点击跳转 -->
         <el-table-column label="操作" width="120">
           <template slot-scope="scope">
-            <router-link :to="{name:'goodsCtEdit', params:{id: 6}}">
+            <router-link :to="{name:'goodsCtEdit', params:{id: scope.row.id}}">
               修改
             </router-link>
           </template>
@@ -66,87 +77,90 @@
 </template>
   
 <script>
-  export default {
-    data() {
-      return {
-        tableData3: [
-          {
-            id: 103,        
-            title: "骆驼男装2017秋季新款运动休闲纯色夹克青年宽松长袖针织开衫卫",
-            is_top: 1,
-            is_hot: 1,
-            is_slide: 1,      
-            categoryname: "男装",
-            img_url: "/imgs/SJ4EgwosX0wTqvyAvhtFGT1w.jpg",
-            imgurl:"http://139.199.192.48:6060/imgs/SJ4EgwosX0wTqvyAvhtFGT1w.jpg",
-            goods_no: "NZ0000000002",
-            stock_quantity: 200,
-            market_price: 1000,
-            sell_price: 800   
-          },
-          {
-            id: 103,        
-            title: "骆驼男装2017秋季新款运动休闲纯色夹克青年宽松长袖针织开衫卫",
-            is_top: 1,
-            is_hot: 1,
-            is_slide: 1,      
-            categoryname: "男装",
-            img_url: "/imgs/SJ4EgwosX0wTqvyAvhtFGT1w.jpg",
-            imgurl:"http://139.199.192.48:6060/imgs/SJ4EgwosX0wTqvyAvhtFGT1w.jpg",
-            goods_no: "NZ0000000002",
-            stock_quantity: 200,
-            market_price: 1000,
-            sell_price: 800   
-          },
-          {
-            id: 103,        
-            title: "骆驼男装2017秋季新款运动休闲纯色夹克青年宽松长袖针织开衫卫",
-            is_top: 1,
-            is_hot: 1,
-            is_slide: 1,      
-            categoryname: "男装",
-            img_url: "/imgs/SJ4EgwosX0wTqvyAvhtFGT1w.jpg",
-            imgurl:"http://139.199.192.48:6060/imgs/SJ4EgwosX0wTqvyAvhtFGT1w.jpg",
-            goods_no: "NZ0000000002",
-            stock_quantity: 200,
-            market_price: 1000,
-            sell_price: 800   
-          },
-      ],
-        //请求接口所需的查询字符串
-        gsListQuery: {
-          pageIndex : 1,
-          pageSize: 10,
-          searchvalue:''
+export default {
+  data() {
+    return {
+      tableData3: [
+        {
+          id: 103,
+          title: "骆驼男装2017秋季新款运动休闲纯色夹克青年宽松长袖针织开衫卫",
+          is_top: 1,
+          is_hot: 1,
+          is_slide: 1,
+          categoryname: "男装",
+          img_url: "/imgs/SJ4EgwosX0wTqvyAvhtFGT1w.jpg",
+          imgurl:
+            "http://139.199.192.48:6060/imgs/SJ4EgwosX0wTqvyAvhtFGT1w.jpg",
+          goods_no: "NZ0000000002",
+          stock_quantity: 200,
+          market_price: 1000,
+          sell_price: 800
+        },
+        {
+          id: 103,
+          title: "骆驼男装2017秋季新款运动休闲纯色夹克青年宽松长袖针织开衫卫",
+          is_top: 1,
+          is_hot: 1,
+          is_slide: 1,
+          categoryname: "男装",
+          img_url: "/imgs/SJ4EgwosX0wTqvyAvhtFGT1w.jpg",
+          imgurl:
+            "http://139.199.192.48:6060/imgs/SJ4EgwosX0wTqvyAvhtFGT1w.jpg",
+          goods_no: "NZ0000000002",
+          stock_quantity: 200,
+          market_price: 1000,
+          sell_price: 800
+        },
+        {
+          id: 103,
+          title: "骆驼男装2017秋季新款运动休闲纯色夹克青年宽松长袖针织开衫卫",
+          is_top: 1,
+          is_hot: 1,
+          is_slide: 1,
+          categoryname: "男装",
+          img_url: "/imgs/SJ4EgwosX0wTqvyAvhtFGT1w.jpg",
+          imgurl:
+            "http://139.199.192.48:6060/imgs/SJ4EgwosX0wTqvyAvhtFGT1w.jpg",
+          goods_no: "NZ0000000002",
+          stock_quantity: 200,
+          market_price: 1000,
+          sell_price: 800
         }
+      ],
+      //请求接口所需的查询字符串
+      gsListQuery: {
+        pageIndex: 1,
+        pageSize: 10,
+        searchvalue: ""
       }
-    },
-    methods: {
-      //获取商品列表数据
-      getGoodsList(){
-        //get方法的第二个参数是一个配置对象，该对象里面可以设置headers请求头，还可以设置params查询字符串
-        this.$http.get(this.$api.gsList,{params: this.gsListQuery})
-        .then(res => {
-          // console.log(res);
-          this.tableData3 = res.data.message;
-          //接口还会返回如下三个数据，将来分页的时候要用
-          //res.data.totalcount 数据总的条数
-          //res. data.pageIndex
-          //res.data.pageSize
-
-        })
+    };
+  },
+      methods: {
+        //获取商品列表数据
+        getGoodsList() {
+          console.log(123);
+          //get方法的第二个参数是一个配置对象，该对象里面可以设置headers请求头，还可以设置params查询字符串
+          this.$http.get(this.$api.gsList, { params: this.gsListQuery })
+            .then(res => {
+              // console.log(res);
+              this.tableData3 = res.data.message;
+              //接口还会返回如下三个数据，将来分页的时候要用
+              //res.data.totalcount 数据总的条数
+              //res. data.pageIndex
+              //res.data.pageSize
+            });
+        }
       },
-    },
     //组件初始化完毕以后，立马调用接口进行渲染
-    created () {
+    created() {
       this.getGoodsList();
     }
-  }
+};
 </script>
   
 <style scoped>
-  div .el-button{
+  div .el-button {
     margin-top: 10px;
-    margin-left:0;
+    margin-left: 0;
   }
 </style>
