@@ -58,9 +58,13 @@
           <template slot-scope="scope">
             <!-- 字体图标，默认为浅灰色，如果添加active类，那么就是亮黑色 -->
             <!-- class可以写活，值可以为一个数组，里面可以加表达式运算 -->
-            <i class="el-icon-picture"></i>
-            <i class="el-icon-upload"></i>
-            <i class="el-icon-star-on"></i>
+            <!-- 监听点击事件，需要把当前商品的id，修改的字段，以及该字段新的状态(布尔值)传过去 -->
+            <i :class="['el-icon-picture', scope.row.is_slide== 1?'active':'']" @click="modifyStatus(scope.row.id, 'is_slide', scope.row.is_slide == 1? false : true)">
+            </i>
+            <i :class="['el-icon-upload', scope.row.is_top == 1?'active':'']" @click="modifyStatus(scope.row.id, 'is_top', scope.row.is_top == 1? false : true)">
+            </i>
+            <i :class="['el-icon-star-on', scope.row.is_hot == 1?'active':'']" @click="modifyStatus(scope.row.id, 'is_hot', scope.row.is_hot == 1? false : true)">
+            </i>
           </template>
         </el-table-column>
         <!-- 操作 -->
@@ -73,6 +77,19 @@
           </template>
         </el-table-column>
       </el-table>
+      <!-- 分页功能 -->
+      <!-- @size-change用来监听每页数量变化时的事件 -->
+      <!-- @current-change用来监听页码变化时的事件 -->
+      <!-- current-page用来指定当前页，page-sizes用来指定每页数量的下拉菜单 -->
+      <!-- page-size用来指定当前每页的数量，total用来指定总数量 -->
+      <el-pagination @size-change="sizeChange"
+        @current-change="currentChange"
+        :current-page="gsListQuery.pageIndex"
+        :page-sizes="page.pageSizes"
+        :page-size="gsListQuery.pageSize"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="page.total">
+      </el-pagination>
     </div>
 </template>
   
@@ -132,23 +149,55 @@ export default {
         pageIndex: 1,
         pageSize: 10,
         searchvalue: ""
+      },
+      //分页相关数据
+      page: {
+        pageSize:[10,20,30,40],
+        total: 100
       }
     };
   },
       methods: {
         //获取商品列表数据
         getGoodsList() {
-          console.log(123);
           //get方法的第二个参数是一个配置对象，该对象里面可以设置headers请求头，还可以设置params查询字符串
           this.$http.get(this.$api.gsList, { params: this.gsListQuery })
             .then(res => {
               // console.log(res);
               this.tableData3 = res.data.message;
               //接口还会返回如下三个数据，将来分页的时候要用
+              this.page.total = res.data.totalcount;
               //res.data.totalcount 数据总的条数
               //res. data.pageIndex
               //res.data.pageSize
             });
+        },
+        //修改商品状态
+        modifyStatus (id, type, newStatus){
+          //post方法的第二个参数是要提交的数据，第三个参数是一个配置对象
+          //注意：下面的数据使用的是es6语法，含义：{[引用变量]:引用变量}
+          // this.$http.post(this.$api.gsEdit + id, {[type]:newStatus})
+          // .then(res=>{
+          //   this.$alert(res.data.message);
+          // })
+
+          //由于没有专门的接口来处理所以，
+          //1.先要找出修改的商品
+          //2.然后修改它的对应的字段
+          //3.newStatus为true，设为1，false设为0
+          this.tableData3.filter(goods=>goods.id == id)[0][type] = newStatus? 1:0;
+          // console.log(this.tableData3.filter(goods=>goods.id == id));//是一个只有一项的数组，这一项是个对象
+        },
+        //每页数量变化时，拿到新值，然后重新请求接口渲染列表
+        sizeChange(pageSize){
+          this.gsListQuery.pageSize = pageSize;
+          //重新获取数据
+          this.getGoodsList();
+        },
+        currentChange(pageIndex){
+          this.gsListQuery.pageIndex = pageIndex;
+          //重新获取数据
+          this.getGoodsList();
         }
       },
     //组件初始化完毕以后，立马调用接口进行渲染
@@ -158,9 +207,16 @@ export default {
 };
 </script>
   
-<style scoped>
-  div .el-button {
-    margin-top: 10px;
-    margin-left: 0;
-  }
+<style scoped lang="less">
+    div .el-button {
+      margin-top: 10px;
+      margin-left: 0;
+    }
+    // 属性选择器，给class前缀为el-icon的标签设置颜色
+    [class^=el-icon]{
+      color: rgba(0,0,0,.3);
+      &.active{
+        color: #000;
+      }
+    }
 </style>
