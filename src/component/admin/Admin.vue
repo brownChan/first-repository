@@ -12,7 +12,6 @@
         </el-header>
         <!-- 右侧主体,将来通过路由控制 -->
         <el-main>
-          主体
           <router-view></router-view>
         </el-main>
       </el-container>
