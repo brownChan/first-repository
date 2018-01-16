@@ -47,10 +47,11 @@
         rules:{
           uname:[
             {validator: validateUname, trigger:"blur"},
-            {require: true, message:"请输入账号", trigger:"blur"},
+            {required: true, message:"请输入账号", trigger:"blur"},
             {min: 5, max: 18, message:"账号在5~18位", trigger:"blur"}
           ],
           upwd:[
+            {required: true, message:"请输入密码", trigger:"blur"},
             {validator: validatePass, trigger:"blur"},
             {pattern:/^\w{6,18}$/, message:"密码在6~18位", trigger:"blur"}
           ]
@@ -121,6 +122,7 @@
     background-color: #000;
     border-radius:10px;
     padding-bottom:20px;
+    padding-left: 10px;
     font-weight: 700;
   }
   .inp{

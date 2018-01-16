@@ -7,15 +7,19 @@
       </el-breadcrumb>
       <div>
         <el-button size="mini" plain icon="el-icon-plus">增加</el-button>
-        <el-button size="mini" plain icon="el-icon-check">全选</el-button>
-        <el-button size="mini" plain icon="el-icon-delete">删除</el-button>
+        <el-button size="mini" plain icon="el-icon-check" @click="delAll">
+          全选
+        </el-button>
+        <el-button size="mini" plain icon="el-icon-delete" @click="delData">
+          删除
+        </el-button>
         <el-input style="width:200px; float:right;" size="small" placeholder="请输入内容" suffix-icon ="el-icon-search" v-model="gsListQuery.searchvalue"  @keydown.native.enter="getGoodsList" >
         </el-input>
       </div>
       <!-- 表格 -->
       <!-- el-table组件必须设置data属性，传入一个数组，然后表格会自动遍历这个数组进行渲染 -->
       <el-table ref="multipleTable" :data="tableData3" tooltip-effect="dark"
-      style="width: 100%">
+      style="width: 100%" @selection-change="selectionChange">
         <!-- 多选框 -->
         <!-- type用来指定当前列的类型，不指定的就是普通文本类型，这里指定为selection含义是多选框类型 -->
         <el-table-column type="selection" width="55">
@@ -198,6 +202,60 @@ export default {
           this.gsListQuery.pageIndex = pageIndex;
           //重新获取数据
           this.getGoodsList();
+        },
+        //删除
+        //从selection数据中提取所有的id,组成ids字符串
+        //然后调用接口删除，删除成功后在请求新的列表数据进行渲染
+        //删除成功后，清空被选的数据
+        del() {
+          let ids = this.selection.map(v=>v.id).join(",");
+          // console.log(ids);  //1,2,3,4...
+          this.$http.get(this.$api.gsDel + ids)
+          .then(res=>{
+            if(res.data.status === 0){
+              //重新进行刷新数据
+              this.getGoodsList();
+              //同时把得到的id清空
+              this.selection = [];
+
+              //同时系统提示刷新成功
+              this.$message({
+                type: 'success',
+                message: '删除成功!'
+              });
+
+            }else{
+              this.$alert(res.data.message);
+            }
+          })
+        },
+        //获取到每个选中的按钮的状态，里面的参数都是当前项的所有数据
+        selectionChange(selection){
+          // console.log(selection); 
+          this.selection = selection;
+        },
+        delData(){
+          this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+
+            this.del();
+
+          }).catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取消删除'
+            });          
+        });
+        },
+        //全选按钮删除
+        delAll(){
+          //真正意义上是得到checkbox的全选，然后再手动调用它的click方法来让它全选
+          var checkAll = document.querySelector(".el-checkbox__original");
+          // console.log(checkAll);
+          checkAll.click();
         }
       },
     //组件初始化完毕以后，立马调用接口进行渲染
@@ -218,5 +276,9 @@ export default {
       &.active{
         color: #000;
       }
+    }
+    a{
+      text-decoration: none;
+      color: #115599
     }
 </style>
