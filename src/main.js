@@ -2,7 +2,7 @@
  * @Author: 我家的小强 
  * @Date: 2018-01-12 11:06:20 
  * @Last Modified by: 我家的小强
- * @Last Modified time: 2018-01-16 02:08:00
+ * @Last Modified time: 2018-01-17 16:45:55
  */
 //1.导入vue相关的第三方包
 import Vue from "vue";
@@ -31,7 +31,7 @@ import routerConfig from "./router/index.js";
 
 //导入axios，因为他不是vue插件，使用起来不方便，所以我们手动把它加入到原型中，方便使用
 import axios from "axios";
-axios.defaults.baseURL = "http://157.122.54.189:9095"; //一配置，以后所有的请求就会自动使用这个域名
+axios.defaults.baseURL = "http://localhost:8899"; //一配置，以后所有的请求就会自动使用这个域名
 axios.defaults.withCredentials = true;//浏览器有个安全机制，如果是跨域请求，浏览器是不会把本地cookie信息携带过去的
 Vue.prototype.$http = axios;
 
@@ -46,7 +46,7 @@ vueRouter.beforeEach(beforeEach);  //注册守卫
 
 //把根组件渲染到指定视图
 new Vue({
-  el:"#app",
+  el: "#app",
   render: function (createElement) {
     return createElement(App);
   },
