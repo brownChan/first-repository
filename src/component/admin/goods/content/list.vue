@@ -33,7 +33,7 @@
             <el-tooltip class="item" effect="dark" placement="right">
               <!-- totip的提示信息，这个标签必须加一个slot属性 -->
               <div slot="content">
-                <img style="width:200px;" :src="scope.row.imgurl" alt="商品预览">
+                <img style="width:200px;" :src="'http://127.0.0.1:8899/'+ scope.row.img_url" alt="商品预览">
               </div>
               <!-- 被提示的原标签 -->
               <router-link :to="{name:'goodsCtEdit',params:{id: scope.row.id}}">
