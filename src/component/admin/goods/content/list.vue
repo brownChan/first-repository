@@ -6,7 +6,7 @@
         <el-breadcrumb-item>内容管理</el-breadcrumb-item>
       </el-breadcrumb>
       <div>
-        <el-button size="mini" plain icon="el-icon-plus">增加</el-button>
+        <el-button size="mini" plain icon="el-icon-plus" @click="addData">增加</el-button>
         <el-button size="mini" plain icon="el-icon-check" @click="delAll">
           全选
         </el-button>
@@ -257,6 +257,11 @@ export default {
           var checkAll = document.querySelector(".el-checkbox__original");
           // console.log(checkAll);
           checkAll.click();
+        },
+
+        //跳转到新增页面
+        addData(){
+          this.$router.push({name:"goodsCtAdd"});
         }
       },
     //组件初始化完毕以后，立马调用接口进行渲染

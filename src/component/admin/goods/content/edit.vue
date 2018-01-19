@@ -104,12 +104,13 @@
   </el-form-item>
 
   <el-form-item>
-    <el-button type="primary" @click="submitForm('ruleForm')">保存修改</el-button>
+    <el-button type="primary" @click="submitForm('ruleForm')" v-if="this.$route.params.id?true:false">保存修改</el-button>
+    <el-button type="primary" @click="addData('ruleForm')" v-if="this.$route.params.id?false:true">添加</el-button>
     <el-button>返回上一页</el-button>
   </el-form-item>
 </el-form>
 </template>
-  
+
 <script>
 //导入富文本样式和组件
 import "quill/dist/quill.core.css";
@@ -134,17 +135,46 @@ export default {
       goodsCategory: [],
 
       //表单数据
-      ruleForm: {},
+      ruleForm: {
+        //添加这些是为了做默认处理，如果不做，将来哪一项没有进行传值或者改变的时候就会报错，发送就不会成功，而且老是报错
+        "title":"Hazzys哈吉斯2017新款男士长袖衬衫纯棉修身英伦衬衫显瘦商务衬衣",
+        "sub_title":"英伦轻奢 专柜同款 为不凡而生",
+        "goods_no":"NZ0000000002",
+        "category_id":"151",
+        "stock_quantity":200,
+        "market_price":1000,
+        "sell_price":800,
+        "status":true,
+        "is_slide":true,
+        "is_top":false,
+        "is_hot":true,
+        "zhaiyao":"为不凡而生",
+        "content":"<p><strong>产品参数：</strong></p>",
+        "imgList":[
+              {
+              "name":"wTgAWDLpQReTQ-ZOMdlAk4vF.jpg",
+              "url":"http://127.0.0.1:8899/imgs/wTgAWDLpQReTQ-ZOMdlAk4vF.jpg",
+              "shorturl":"/imgs/wTgAWDLpQReTQ-ZOMdlAk4vF.jpg"        
+              }
+          ],
+        "fileList":[
+            {
+            "name":"HN5d4_wrbsUk5KQNjzYSGGwm.jpg",
+            "url":"http://127.0.0.1:8899/imgs/HN5d4_wrbsUk5KQNjzYSGGwm.jpg",
+            "shorturl":"/imgs/HN5d4_wrbsUk5KQNjzYSGGwm.jpg"
+            }
+        ]
+      },
 
       //表单校验规则
       rules: {
         title: [
           { required: true, message: "请输入标题", trigger: "blur" },
-          { min: 5, max: 35, message: "长度在 5 到 35 个字符", trigger: "blur" }
+          { min: 5, max: 70, message: "长度在 5 到 70 个字符", trigger: "blur" }
         ],
         sub_title: [
           { required: true, message: "请输入副标题", trigger: "blur" },
-          { min: 5, max: 35, message: "长度在 5 到 35 个字符", trigger: "blur" }
+          { min: 5, max: 70, message: "长度在 5 到 70 个字符", trigger: "blur" }
         ],
         category_id: [
           { required: true, message: "请选择商品分类", trigger: "blur" },
@@ -213,7 +243,7 @@ export default {
         }
       });
     },
-    //点击保存按钮
+    //点击修改保存按钮
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
@@ -223,6 +253,22 @@ export default {
           return false;
         }
       });
+    },
+
+    //点击保存按钮
+    addData(){
+      this.$http.post(this.$api.gsAdd, this.ruleForm)
+      .then(res=>{
+        if(res.data.status === 0){
+          console.log("里面");
+          this.$alert("保存成功，即将跳转回首页",'温馨提示', {
+          confirmButtonText: '确定',
+          callback: action => {
+            this.$router.push({ name: "goodsCtList" });
+          }
+        })
+        }
+      })
     },
 
     //删除封面图
@@ -246,7 +292,9 @@ export default {
   created() {
     this.id = this.$route.params.id;
     // console.log(this.id);   88
-    this.getGoods();
+    if(this.$route.params.id){
+      this.getGoods();
+    }
     this.getGoodsCategory();
   },
 
