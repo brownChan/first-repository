@@ -137,33 +137,13 @@ export default {
       //表单数据
       ruleForm: {
         //添加这些是为了做默认处理，如果不做，将来哪一项没有进行传值或者改变的时候就会报错，发送就不会成功，而且老是报错
-        "title":"Hazzys哈吉斯2017新款男士长袖衬衫纯棉修身英伦衬衫显瘦商务衬衣",
-        "sub_title":"英伦轻奢 专柜同款 为不凡而生",
-        "goods_no":"NZ0000000002",
-        "category_id":"151",
-        "stock_quantity":200,
-        "market_price":1000,
-        "sell_price":800,
-        "status":true,
-        "is_slide":true,
+        
+        "status":false,
+        "is_slide":false,
         "is_top":false,
-        "is_hot":true,
-        "zhaiyao":"为不凡而生",
-        "content":"<p><strong>产品参数：</strong></p>",
-        "imgList":[
-              {
-              "name":"wTgAWDLpQReTQ-ZOMdlAk4vF.jpg",
-              "url":"http://127.0.0.1:8899/imgs/wTgAWDLpQReTQ-ZOMdlAk4vF.jpg",
-              "shorturl":"/imgs/wTgAWDLpQReTQ-ZOMdlAk4vF.jpg"        
-              }
-          ],
-        "fileList":[
-            {
-            "name":"HN5d4_wrbsUk5KQNjzYSGGwm.jpg",
-            "url":"http://127.0.0.1:8899/imgs/HN5d4_wrbsUk5KQNjzYSGGwm.jpg",
-            "shorturl":"/imgs/HN5d4_wrbsUk5KQNjzYSGGwm.jpg"
-            }
-        ]
+        "is_hot":false,
+        "imgList":[],
+        "fileList":[]
       },
 
       //表单校验规则
